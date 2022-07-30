@@ -1,13 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Supermarket, type: :model do
-  describe 'relationships' do
-    it { should have_many :customers }
-  end
-
-  describe 'instance methods' do
-    describe '#supermarket_items_list' do
-      it 'shows the uniq list of items for a supermarket' do 
+RSpec.describe 'the supermarket show page' do 
+    it 'has a show page with the name and a link to view all of the items the supermarket has' do 
         whole_paycheck = Supermarket.create!(name: "We want all your money", location: "Moneyville")
         dans = Supermarket.create!(name: "Dan's Food'n'stuff", location: "Townville")
 
@@ -31,10 +25,23 @@ RSpec.describe Supermarket, type: :model do
         CustomerItem.create!(item: gouda, customer: person2)
         CustomerItem.create!(item: icecream, customer: person3)
 
-        expect(whole_paycheck.supermarket_items_list.count).to eq(5)
-        expect(whole_paycheck.supermarket_items_list[0].name).to eq("ham")
-        expect(whole_paycheck.supermarket_items_list[4].name).to eq("salsa")
-      end 
+        visit "/supermarkets/#{whole_paycheck.id}"
+
+        expect(page).to have_content("We want all your money")
+        expect(page).to have_content("View all items")
+        expect(page).to_not have_content("ham")
+
+        click_link("View all items")
+
+        expect(current_path).to eq("/supermarkets/#{whole_paycheck.id}/items")
+
+        expect(page).to have_content("ham", count: 1)
+        expect(page).to_not have_content("bread", count: 2)
+        expect(page).to have_content("bread", count: 1)
+        expect(page).to have_content("gouda", count: 1)
+        expect(page).to_not have_content("gouda", count: 2)
+        expect(page).to have_content("wine", count: 1)
+        expect(page).to have_content("salsa", count: 1)
+        expect(page).to_not have_content("icecream")
     end 
-  end 
-end
+end 
