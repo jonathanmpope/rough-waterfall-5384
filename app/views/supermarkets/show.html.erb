@@ -1,2 +1,10 @@
 <h3><%= @supermarket.name %> </h3>
 <p><%= link_to "View all items", "/supermarkets/#{@supermarket.id}/items" %>
+<div id="top_items">
+<h3>Top 3 Items:<% @supermarket.top_three_items.each do |item| %> </h3>
+    <div class="item">
+    <p><%= item.name %></p>
+     </div>
+<% end %>
+</div>
+
