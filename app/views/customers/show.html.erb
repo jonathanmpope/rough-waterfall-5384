@@ -4,3 +4,5 @@
     <p><%= item.name %></p>
     <p><%= number_to_currency(item.price / 100) %></p>
 <% end %>
+
+<h3>Total cost: <%= number_to_currency(@customer.total_cost / 100) %> </h3>

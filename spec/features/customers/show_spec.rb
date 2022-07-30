@@ -23,4 +23,19 @@ RSpec.describe 'the customer show page' do
         expect(page).to have_content("bread")
         expect(page).to have_content("gouda")
     end 
+
+       it 'has the total price of all items' do 
+        dans = Supermarket.create!(name: "Dan's Food'n'stuff", location: "Townville")
+        whole_paycheck = Supermarket.create!(name: "We want all your money", location: "Moneyville")
+        person1 = dans.customers.create!(name: "Boaty McBoatface")
+        person2 = whole_paycheck.customers.create!(name: "Sally McSalad")
+        person1.items.create!(name:"ham", price: 1300)
+        person1.items.create!(name:"bread", price: 500)
+        person1.items.create!(name:"gouda", price: 2000)
+        person2.items.create!(name:"wine", price: 2500)
+
+        visit "/customers/#{person1.id}"
+
+        expect(page).to have_content("Total cost: $38.00")
+    end 
 end 
